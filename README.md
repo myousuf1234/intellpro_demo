@@ -12,13 +12,13 @@ This pipeline processes research reports and documents shared in Slack channels 
 
 ## Features
 
-- ✅ Slack API integration with pagination support
-- ✅ Parallel PDF processing using multiprocessing (bypasses Python's GIL)
-- ✅ OpenAI-powered metadata extraction
-- ✅ PostgreSQL storage with idempotent operations
-- ✅ Docker Compose for easy deployment
-- ✅ Comprehensive error handling and logging
-- ✅ Environment-based configuration (no hardcoded secrets)
+-  Slack API integration with pagination support
+-  Parallel PDF processing using multiprocessing (bypasses Python's GIL)
+-  OpenAI-powered metadata extraction
+-  PostgreSQL storage with idempotent operations
+-  Docker Compose for easy deployment
+-  Comprehensive error handling and logging
+-  Environment-based configuration (no hardcoded secrets)
 
 ## Prerequisites
 
@@ -128,29 +128,6 @@ docker-compose up app
 
 Existing documents (identified by Slack file_id) will be updated rather than duplicated.
 
-## Project Structure
-
-```
-intellpro_demo/
-├── main.py                 # Main pipeline orchestration
-├── config.py               # Configuration management
-├── slack_client.py         # Slack API integration
-├── pdf_processor.py        # Parallel PDF text extraction
-├── metadata_extractor.py   # OpenAI metadata extraction
-├── db_manager.py           # PostgreSQL operations
-├── Dockerfile              # Python app container
-├── docker-compose.yml      # Multi-container orchestration
-├── requirements.txt        # Python dependencies
-├── .env.example            # Environment template
-├── .gitignore             # Git ignore rules
-└── README.md              # This file
-
-Generated during execution:
-├── extracted_pdfs/        # Downloaded PDFs and extracted text
-├── logs/                  # Application logs
-└── pipeline.log           # Execution log
-```
-
 ## Architecture Decisions
 
 ### Database Schema Design
@@ -198,10 +175,10 @@ with Pool(processes=self.max_workers) as pool:
 ```
 
 **Trade-offs:**
-- ✅ Significant speedup for multiple PDFs
-- ✅ Better resource utilization on multi-core systems
-- ⚠️ Higher memory usage (one process per worker)
-- ⚠️ Process creation overhead (minimal for PDF processing)
+- Significant speedup for multiple PDFs
+- Better resource utilization on multi-core systems
+- Higher memory usage (one process per worker)
+- Process creation overhead (minimal for PDF processing)
 
 ### Error Handling Approach
 
@@ -211,36 +188,6 @@ with Pool(processes=self.max_workers) as pool:
 - **Missing Data:** Continue processing with null values rather than failing
 - **Network Errors:** Log and skip individual files, continue with batch
 - **Database Errors:** Retry connections with timeout (30 attempts)
-
-### Naming Convention for Extracted Files
-
-**Format:** `{slack_file_id}_{original_filename}.pdf`
-
-**Example:** `F06ABC123_research_report_2024.pdf`
-
-**Rationale:**
-- Slack file_id ensures uniqueness (no collisions)
-- Original filename preserved for human readability
-- Easy to trace back to Slack source
-- Suitable for auditing and compliance
-
-## Configuration
-
-All configuration is managed through environment variables (no hardcoded secrets):
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `SLACK_BOT_TOKEN` | Slack bot OAuth token | Required |
-| `SLACK_CHANNEL` | Channel name to monitor | `research` |
-| `OPENAI_API_KEY` | OpenAI API key | Required |
-| `POSTGRES_HOST` | Database host | `db` |
-| `POSTGRES_PORT` | Database port | `5432` |
-| `POSTGRES_DB` | Database name | `document_db` |
-| `POSTGRES_USER` | Database user | `postgres` |
-| `POSTGRES_PASSWORD` | Database password | `postgres` |
-| `PDF_STORAGE_PATH` | Local storage path | `./extracted_pdfs` |
-| `LOG_LEVEL` | Logging level | `INFO` |
-| `MAX_WORKERS` | Parallel workers | `4` |
 
 ## Monitoring and Observability
 
@@ -257,24 +204,6 @@ docker-compose logs -f app
 ```
 
 Log levels: ERROR, WARNING, INFO, DEBUG
-
-### Progress Tracking
-
-The pipeline logs progress at each stage:
-- Messages fetched from Slack
-- PDFs downloaded
-- Text extraction progress
-- Metadata extraction progress
-- Database insertion results
-
-### Statistics
-
-At the end of each run, the pipeline displays:
-- Total documents processed
-- Documents with extracted metadata
-- Total text length extracted
-- Total file size processed
-- Execution time
 
 ## Future Improvements
 
@@ -391,23 +320,4 @@ docker run -d -p 5432:5432 \
 # Run the pipeline
 python main.py
 ```
-
-### Type Hints
-
-The codebase uses type hints throughout for better IDE support and code quality.
-
-### Code Quality
-
-- Comprehensive docstrings for all functions and classes
-- Type hints for function parameters and returns
-- Error handling with informative logging
-- Clean separation of concerns (each module has a single responsibility)
-
-## License
-
-[Your License Here]
-
-## Contact
-
-[Your Contact Information]
 
